@@ -24,7 +24,13 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       port: VITE_PORT,
       host: "0.0.0.0",
       // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
-      proxy: {},
+      proxy: {
+        "/api": {
+          target: "http://localhost:8080", // 你的API服务器地址
+          changeOrigin: true, // 如果你的API服务器与前端不在同一域名下，需要设置为true
+          rewrite: path => path.replace(/^\/api/, "") // 这里移除了请求路径中的'/api'前缀，实际请求到后端时不带'/api'
+        }
+      },
       // 预热文件以提前转换和缓存结果，降低启动期间的初始页面加载时长并防止转换瀑布
       warmup: {
         clientFiles: ["./index.html", "./src/{views,components}/*"]
